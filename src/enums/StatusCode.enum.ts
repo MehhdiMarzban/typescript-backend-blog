@@ -5,4 +5,5 @@ export enum StatusCode {
     UNAUTHORZIED = 401,
     SUCCESSFULL = 200,
     CREATE_SUCCESSFULL = 201,
+    SERVER_ERROR = 500
 }
