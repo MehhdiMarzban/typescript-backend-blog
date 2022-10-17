@@ -1,4 +1,4 @@
-import { StatusCode } from "../enums/index.enums";
+import { StatusCode } from "../enums";
 
 export type ResponseMessage = {
     status: StatusCode;

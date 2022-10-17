@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { Controller, Get } from "../decorators/routers.decorators";
-import { StatusCode } from "../enums/index.enums";
+import { StatusCode } from "../enums";
 
 @Controller("/users")
 class HomeController {

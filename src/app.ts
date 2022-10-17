@@ -3,14 +3,19 @@ import http, { Server } from "http";
 
 import "./app.modules";
 import router from "./routes/index.routes";
-import { Messages, ServerConfig, StatusCode } from "./enums/index.enums";
-import { ResponseMessage } from "./types/index.types";
+import { Messages, ServerConfig, StatusCode } from "./enums";
+import { ResponseMessage } from "./types";
 
 //* build express server
 const app: Application = express();
 const server: Server = http.createServer(app);
 
 //* apply middlewares
+
+//* apply built-in middlewares
+app.use(express.urlencoded({extended: true}));
+app.use(express.json());
+
 //* main routes
 app.use(router);
 
