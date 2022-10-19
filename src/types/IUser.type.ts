@@ -5,4 +5,5 @@ export interface IUser{
     accessToken: string;
     email?: string;
     mobile?: string;
+    getAuthToken: () => string;
 }

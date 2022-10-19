@@ -8,6 +8,7 @@ import { comparePassword, hashPassword } from "../utils/auth";
 
 @Controller("/auth")
 class AuthController {
+    
     @Post("/register")
     async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
@@ -49,9 +50,17 @@ class AuthController {
             //* checking password
             const isPasswordCorrect: boolean = comparePassword(password, foundUser.password);
             if (isPasswordCorrect) {
+                //* build access token
+                const accessToken = foundUser.getAuthToken();
+
                 return res
+                    .header("X-Auth-Token", accessToken)
                     .status(StatusCode.SUCCESSFULL)
-                    .json({ status: StatusCode.SUCCESSFULL, message: Messages.LOGIN_SUCCESS });
+                    .json({
+                        status: StatusCode.SUCCESSFULL,
+                        message: Messages.LOGIN_SUCCESS,
+                        data: { accessToken },
+                    });
             } else {
                 return res
                     .status(StatusCode.UNAUTHORZIED)
