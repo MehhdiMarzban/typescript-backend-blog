@@ -8,7 +8,6 @@ import { comparePassword, hashPassword } from "../utils/auth";
 
 @Controller("/auth")
 class AuthController {
-    
     @Post("/register")
     async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
@@ -17,9 +16,7 @@ class AuthController {
             //* check for exist user
             const foundUser = await UserModel.findOne({ username });
             if (foundUser) {
-                return res
-                    .status(StatusCode.BAD_REQUEST)
-                    .json({ status: StatusCode.BAD_REQUEST, message: Messages.REGISTER_FAILED });
+                throw { status: StatusCode.BAD_REQUEST, message: Messages.REGISTER_FAILED };
             }
 
             //* create new user
@@ -42,9 +39,7 @@ class AuthController {
 
             //* checking user
             if (!foundUser) {
-                return res
-                    .status(StatusCode.UNAUTHORZIED)
-                    .json({ status: StatusCode.UNAUTHORZIED, message: Messages.LOGIN_FAILED });
+                throw { status: StatusCode.UNAUTHORZIED, message: Messages.LOGIN_FAILED };
             }
 
             //* checking password
@@ -53,18 +48,13 @@ class AuthController {
                 //* build access token
                 const accessToken = foundUser.getAuthToken();
 
-                return res
-                    .header("X-Auth-Token", accessToken)
-                    .status(StatusCode.SUCCESSFULL)
-                    .json({
-                        status: StatusCode.SUCCESSFULL,
-                        message: Messages.LOGIN_SUCCESS,
-                        data: { accessToken },
-                    });
+                return res.header("X-Auth-Token", accessToken).status(StatusCode.SUCCESSFULL).json({
+                    status: StatusCode.SUCCESSFULL,
+                    message: Messages.LOGIN_SUCCESS,
+                    data: { accessToken },
+                });
             } else {
-                return res
-                    .status(StatusCode.UNAUTHORZIED)
-                    .json({ status: StatusCode.UNAUTHORZIED, message: Messages.LOGIN_FAILED });
+                throw { status: StatusCode.UNAUTHORZIED, message: Messages.LOGIN_FAILED };
             }
         } catch (error) {
             next(error);
