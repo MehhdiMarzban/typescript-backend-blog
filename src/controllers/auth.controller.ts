@@ -1,31 +1,21 @@
 import { Response, Request, NextFunction } from "express";
 
+import AuthServices from "../services/auth.service";
 import { Messages, StatusCode } from "../enums";
-import { IUser } from "../types";
 import { Controller, Post } from "../decorators/routers.decorators";
-import UserModel from "../models/user.model";
-import { comparePassword, hashPassword } from "../utils/auth";
 
 @Controller("/auth")
 class AuthController {
     @Post("/register")
     async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-            const { fullname, username, password, email = "", mobile = "" }: IUser = req.body;
-
-            //* check for exist user
-            const foundUser = await UserModel.findOne({ username });
-            if (foundUser) {
-                throw { status: StatusCode.BAD_REQUEST, message: Messages.REGISTER_FAILED };
+            const user = await AuthServices.register(req.body);
+            if (user) {
+                return res.status(StatusCode.CREATE_SUCCESSFULL).json({
+                    status: StatusCode.CREATE_SUCCESSFULL,
+                    message: Messages.REGISTER_SUCCESS,
+                });
             }
-
-            //* create new user
-            const hashedPassword: string = hashPassword(password);
-            await UserModel.create({ fullname, username, password: hashedPassword, email, mobile });
-            return res.status(StatusCode.CREATE_SUCCESSFULL).json({
-                status: StatusCode.CREATE_SUCCESSFULL,
-                message: Messages.REGISTER_SUCCESS,
-            });
         } catch (error) {
             next(error);
         }
@@ -34,27 +24,13 @@ class AuthController {
     @Post("/login")
     async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-            const { username, password }: IUser = req.body;
-            const foundUser: IUser | null = await UserModel.findOne({ username });
-
-            //* checking user
-            if (!foundUser) {
-                throw { status: StatusCode.UNAUTHORZIED, message: Messages.LOGIN_FAILED };
-            }
-
-            //* checking password
-            const isPasswordCorrect: boolean = comparePassword(password, foundUser.password);
-            if (isPasswordCorrect) {
-                //* build access token
-                const accessToken = foundUser.getAuthToken();
-
+            const accessToken = await AuthServices.login(req.body);
+            if (accessToken) {
                 return res.header("X-Auth-Token", accessToken).status(StatusCode.SUCCESSFULL).json({
                     status: StatusCode.SUCCESSFULL,
                     message: Messages.LOGIN_SUCCESS,
                     data: { accessToken },
                 });
-            } else {
-                throw { status: StatusCode.UNAUTHORZIED, message: Messages.LOGIN_FAILED };
             }
         } catch (error) {
             next(error);
