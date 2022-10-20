@@ -1,16 +1,14 @@
 import { Schema, model } from "mongoose";
-import { sign } from "jsonwebtoken";
 
 import { IPayload, IUser } from "../types";
-import {ServerConfig} from "../enums";
 import { createToken } from '../utils/auth';
 
 const schema = new Schema<IUser>({
-    fullname: { type: String, required: true, trim: true },
-    username: { type: String, required: true, trim: true },
-    password: { type: String, required: true },
+    fullname: { type: String, required: true, trim: true, min: 4, max: 64 },
+    username: { type: String, required: true, trim: true, min: 6, max: 16 },
+    password: { type: String, required: true, min: 6, max: 32 },
     accessToken: { type: String, default: "" },
-    mobile: { type: String, default: "" },
+    mobile: { type: String, default: "", length: 11 },
     email: { type: String, default: "" },
 });
 

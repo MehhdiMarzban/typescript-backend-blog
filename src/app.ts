@@ -30,7 +30,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 //* error route
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
-    const status: number = error.status || StatusCode.SERVER_ERROR;
+    const status: number = error.status || (error.errors && StatusCode.BAD_REQUEST) || StatusCode.SERVER_ERROR;
     const message: string | Messages = error.message || Messages.SERVER_ERROR;
     res.status(status).json({ status, message });
 });
