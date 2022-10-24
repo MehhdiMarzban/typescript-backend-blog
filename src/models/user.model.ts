@@ -31,6 +31,6 @@ schema.methods.getAuthToken = function(): string{
     return accessToken;
 }
 
-const UserModel = model("user", schema);
+const UserModel = model<IUser>("user", schema);
 
 export default UserModel;
