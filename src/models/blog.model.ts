@@ -6,7 +6,7 @@ const schema = new Schema<IBlog>({
     title: {type: String, required: true, trim: true},
     body: {type: String, required: true},
     author: {type: String, required: true, trim: true},
-    image: {type: URL, required: true, trim: true, default: ""}
+    image: {type: String, required: true, trim: true, default: ""}
 });
 
 const BlogModel = model<IBlog>("blog", schema);
