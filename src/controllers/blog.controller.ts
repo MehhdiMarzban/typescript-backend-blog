@@ -1,9 +1,10 @@
-import { Controller, Delete, Get, Post, Put } from "../decorators/routers.decorators";
+import { Controller, Delete, Get, Middlewares, Post, Put } from "../decorators/routers.decorators";
 import { IBlog } from "../types";
 import { NextFunction, Request, Response } from "express";
 import { StatusCode } from "../enums/StatusCode.enum";
 import blogService from "../services/blog.service";
 import { Messages } from "../enums";
+import { authMiddleware } from "../middlewares";
 
 @Controller("/blogs")
 class BlogController {
@@ -42,6 +43,7 @@ class BlogController {
     }
 
     @Post("/")
+    @Middlewares([authMiddleware])
     async createBlog(
         req: Request,
         res: Response,
@@ -59,6 +61,7 @@ class BlogController {
     }
 
     @Put("/:id")
+    @Middlewares([authMiddleware])
     async updateBlog(
         req: Request,
         res: Response,
@@ -76,6 +79,7 @@ class BlogController {
     }
 
     @Delete("/:id")
+    @Middlewares([authMiddleware])
     async deleteBlog(
         req: Request,
         res: Response,

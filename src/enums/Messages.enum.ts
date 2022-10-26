@@ -10,4 +10,5 @@ export enum Messages {
     BAD_REQUEST = "bad request.",
     DELETED = "successfull deleted.",
     UPDATED = "successfull updated.",
+    UNAUTHORZIED = "user is not authorized",
 }

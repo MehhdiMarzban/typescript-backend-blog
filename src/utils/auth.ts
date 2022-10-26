@@ -1,8 +1,8 @@
 import {genSaltSync, hashSync, compareSync} from "bcrypt";
-import {sign, Algorithm, Secret } from "jsonwebtoken";
+import {sign, Algorithm, Secret, verify } from "jsonwebtoken";
 
 import {ServerConfig} from "../enums";
-import { IPayload } from "../types";
+import { IDecodeToken, IPayload } from "../types";
 
 export const hashPassword = (password: string): string => {
     const salt: string = genSaltSync(10);
@@ -18,4 +18,9 @@ export const createToken = (payload: IPayload): string => {
     const algorithm: Algorithm = "HS512";
     const expiresIn = "1d"; 
     return sign(payload, secretKey, {algorithm, expiresIn});
+}
+
+export const verifyToken = (token: string): IDecodeToken => {
+    const user: IDecodeToken | undefined = verify(token, ServerConfig.SECRET_KEY) as IDecodeToken;
+    return user;
 }

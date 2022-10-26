@@ -1,4 +1,5 @@
-import { Router } from "express";
+import { Router, RequestHandler } from "express";
+import { MiddlewarePropertyDescriptor } from "../types";
 
 import { routerPathMaker } from "../utils/path";
 
@@ -12,37 +13,92 @@ export function Controller(decoratorPath?: string): Function {
 }
 
 export function Get(decoratorPath?: string): Function {
-    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
+    return function (
+        target: any,
+        propertyKey: string,
+        descriptor: MiddlewarePropertyDescriptor
+    ): void {
         const path: string = routerPathMaker(decoratorPath, propertyKey);
-        DecoratorRouter.get(path, descriptor.value); //* can use target[propertyKey] instead of descriptor.value
+        //* can use target[propertyKey] instead of descriptor.value
+        if (descriptor.middlewares) {
+            DecoratorRouter.get(path, descriptor.middlewares, descriptor.value);
+        } else {
+            DecoratorRouter.get(path, descriptor.value);
+        }
     };
 }
 
 export function Post(decoratorPath?: string): Function {
-    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
+    return function (
+        target: any,
+        propertyKey: string,
+        descriptor: MiddlewarePropertyDescriptor
+    ): void {
         const path: string = routerPathMaker(decoratorPath, propertyKey);
-        DecoratorRouter.post(path, descriptor.value);
+        if (descriptor.middlewares) {
+            DecoratorRouter.post(path, descriptor.middlewares, descriptor.value);
+        } else {
+            DecoratorRouter.post(path, descriptor.value);
+        }
     };
 }
 
 export function Put(decoratorPath?: string): Function {
-    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
+    return function (
+        target: any,
+        propertyKey: string,
+        descriptor: MiddlewarePropertyDescriptor
+    ): void {
         const path: string = routerPathMaker(decoratorPath, propertyKey);
-        DecoratorRouter.put(path, descriptor.value);
+        if (descriptor.middlewares) {
+            DecoratorRouter.put(path, descriptor.middlewares, descriptor.value);
+        } else {
+            DecoratorRouter.put(path, descriptor.value);
+        }
     };
 }
 
 export function Patch(decoratorPath?: string): Function {
-    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
+    return function (
+        target: any,
+        propertyKey: string,
+        descriptor: MiddlewarePropertyDescriptor
+    ): void {
         const path: string = routerPathMaker(decoratorPath, propertyKey);
-        DecoratorRouter.patch(path, descriptor.value);
+        if (descriptor.middlewares) {
+            DecoratorRouter.patch(path, descriptor.middlewares, descriptor.value);
+        } else {
+            DecoratorRouter.patch(path, descriptor.value);
+        }
     };
 }
 
 export function Delete(decoratorPath?: string): Function {
-    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
+    return function (
+        target: any,
+        propertyKey: string,
+        descriptor: MiddlewarePropertyDescriptor
+    ): void {
         const path: string = routerPathMaker(decoratorPath, propertyKey);
-        DecoratorRouter.delete(path, descriptor.value);
+        if (descriptor.middlewares) {
+            DecoratorRouter.delete(path, descriptor.middlewares, descriptor.value);
+        } else {
+            DecoratorRouter.delete(path, descriptor.value);
+        }
+    };
+}
+
+export function ClassMiddlewares(middleware: Function) {
+    return function (target: any) {};
+}
+
+export function Middlewares(middlewares: RequestHandler[]): Function {
+    return function (
+        target: any,
+        propertyKey: string,
+        descriptor: MiddlewarePropertyDescriptor
+    ): void {
+        descriptor.middlewares = middlewares;
     };
 }
 
