@@ -8,7 +8,12 @@ const DecoratorRouter: Router = Router();
 export function Controller(decoratorPath?: string): Function {
     return function (target: any): void {
         const path: string = routerPathMaker(decoratorPath, "/");
-        DecoratorRouter.use(path, DecoratorRouter);
+        if(target._middlewares){
+            DecoratorRouter.use(path, target._middlewares ,DecoratorRouter);
+        }
+        else{
+            DecoratorRouter.use(path, DecoratorRouter);
+        }
     };
 }
 
@@ -88,8 +93,10 @@ export function Delete(decoratorPath?: string): Function {
     };
 }
 
-export function ClassMiddlewares(middleware: Function) {
-    return function (target: any) {};
+export function ClassMiddlewares(middlewares: RequestHandler[]) {
+    return function (target: any) {
+        target._middlewares = middlewares;
+    };
 }
 
 export function Middlewares(middlewares: RequestHandler[]): Function {

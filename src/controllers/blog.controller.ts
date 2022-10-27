@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Middlewares, Post, Put } from "../decorators/routers.decorators";
+import { ClassMiddlewares, Controller, Delete, Get, Middlewares, Post, Put } from "../decorators/routers.decorators";
 import { IBlog } from "../types";
 import { NextFunction, Request, Response } from "express";
 import { StatusCode } from "../enums/StatusCode.enum";
@@ -7,6 +7,7 @@ import { Messages } from "../enums";
 import { authMiddleware } from "../middlewares";
 
 @Controller("/blogs")
+@ClassMiddlewares([authMiddleware]) //* this middleware will be apply to all of methods in this controller
 class BlogController {
     @Get("/")
     async getAllBlogs(
