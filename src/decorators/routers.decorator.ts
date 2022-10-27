@@ -1,4 +1,4 @@
-import { Router, RequestHandler } from "express";
+import { Router } from "express";
 import { MiddlewarePropertyDescriptor } from "../types";
 
 import { routerPathMaker } from "../utils/path";
@@ -8,10 +8,9 @@ const DecoratorRouter: Router = Router();
 export function Controller(decoratorPath?: string): Function {
     return function (target: any): void {
         const path: string = routerPathMaker(decoratorPath, "/");
-        if(target._middlewares){
-            DecoratorRouter.use(path, target._middlewares ,DecoratorRouter);
-        }
-        else{
+        if (target._middlewares) {
+            DecoratorRouter.use(path, target._middlewares, DecoratorRouter);
+        } else {
             DecoratorRouter.use(path, DecoratorRouter);
         }
     };
@@ -90,22 +89,6 @@ export function Delete(decoratorPath?: string): Function {
         } else {
             DecoratorRouter.delete(path, descriptor.value);
         }
-    };
-}
-
-export function ClassMiddlewares(middlewares: RequestHandler[]) {
-    return function (target: any) {
-        target._middlewares = middlewares;
-    };
-}
-
-export function Middlewares(middlewares: RequestHandler[]): Function {
-    return function (
-        target: any,
-        propertyKey: string,
-        descriptor: MiddlewarePropertyDescriptor
-    ): void {
-        descriptor.middlewares = middlewares;
     };
 }
 

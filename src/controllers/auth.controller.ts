@@ -2,7 +2,7 @@ import { Response, Request, NextFunction } from "express";
 
 import AuthServices from "../services/auth.service";
 import { Messages, StatusCode } from "../enums";
-import { Controller, Post } from "../decorators/routers.decorators";
+import { Controller, Post } from "../decorators/routers.decorator";
 import { IUser } from "../types";
 
 @Controller("/auth")

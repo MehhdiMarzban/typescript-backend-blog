@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { Controller, Get } from "../decorators/routers.decorators";
+import { Controller, Get } from "../decorators/routers.decorator";
 import { StatusCode } from "../enums";
 
 @Controller("/users")

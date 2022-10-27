@@ -1,6 +1,6 @@
-import {Router} from "express";
+import { Router } from "express";
 
-import DecoratorRoutes from "../decorators/routers.decorators";
+import DecoratorRoutes from "../decorators/routers.decorator";
 
 const router: Router = Router();
 router.use(DecoratorRoutes);
